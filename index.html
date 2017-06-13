@@ -1,0 +1,227 @@
+<html>
+  <head>
+    <style>
+	  body {
+	    background-color : ;
+	  }
+	  #mainDiv {
+	    width : 300px;
+        height : 300px;		
+	  }
+	  img {
+	  width : 30%;
+	  height : 30%;
+	  
+	  float: left;
+	  }
+	  button {
+	     width : 94%;
+		 margin-top : 10px;
+	  }
+	  .horizontalLines {
+	      border-top : solid 5px rgb(153, 217, 234);
+		  border-bottom : solid 5px rgb(153, 217, 234);
+	  
+	  }
+	  .verticalLines {
+	     border-left : solid 5px rgb(153, 217, 234);
+		 border-right : solid 5px rgb(153, 217, 234);
+		 
+	  }
+	</style>
+  </head>
+  <body>
+     <div id="mainDiv" />
+	   <div>
+	    <img src='empty.bmp' />
+		<img src='empty.bmp' class='verticalLines' />
+		<img src='empty.bmp' />
+	   </div>
+	   <div>
+	     <img src='empty.bmp' class='horizontalLines' />
+		 <img src='empty.bmp' class='horizontalLines verticalLines' />
+		 <img src='empty.bmp' class='horizontalLines' />
+	   </div>
+	   <div>
+	      <img src='empty.bmp' />
+		  <img src='empty.bmp' class='verticalLines' />
+		  <img src='empty.bmp' />
+		</div>
+		<div>
+		   <button id='start'>start / restart</button>
+		</div>
+	   </div>
+</body>
+</html>
+
+<script>
+  var images = document.getElementsByTagName('img');
+  var startButton = document.getElementById('start');
+  
+  var isPlayerX = true;
+  var isPlaying = true;
+  
+  var imagesSource =
+  {
+       EMPTY : "empty.bmp",
+	   X : "x.bmp",
+	   O : "o.bmp",
+	   XWIN : "xwin.bmp",
+	   OWIN : "owin.bmp"
+	 
+  };
+  
+  //clear button action
+  startButton.onclick = () => {
+  
+    for(var i in images){
+	
+	   images[i].src = imagesSource.EMPTY;
+	}
+	
+	 isPlaying = true;
+  }
+  
+   //table images actions
+  for(var i in images){
+  
+    images[i].onclick = (e) => {
+	
+	  if(!isPlaying) return;
+	  if(e.target.src.indexOf(imagesSource.EMPTY) == -1 ) return;
+	  
+	  if( isPlayerX ){
+	  
+	    e.target.src = imagesSource.X;
+	  }
+	  else{
+	  
+	    e.target.src = imagesSource.O;
+	  }
+	  
+	  if(isWinner()) {
+	  
+	     isPlaying = false;
+	  }
+	  
+	  isPlayerX = !isPlayerX;
+	}
+  }
+  
+  var isWinner = function(){
+  
+    var searchFor = isPlayerX ? imagesSource.X : imagesSource.O;
+	var winImage = isPlayerX ? imagesSource.XWIN : imagesSource.OWIN;
+	
+	  //0 1 2
+	  //3 4 5
+	  //6 7 8
+	  var width2DArray = images.length/3;
+	  
+	  //horizontal search
+	  for (var row=0; row<width2DArray; row++){
+	  
+	     var isWinner = true;
+		 var winnerImages = [];
+		 
+		 for(var column = 0; column<width2DArray; column++){
+		 
+		   var idx = column + row * width2DArray;
+		   
+		   if(images[idx].src.indexOf(searchFor) == -1)
+		     isWinner = false;
+		   else
+		     winnerImages.push(images[idx]);
+		 
+		 }
+	     
+		  if(isWinner) {
+		  
+		     for(var i in winnerImages){
+			 
+			    winnerImages[i].src = winImage;
+			 }
+			 return true;
+		  }
+	  }
+	  
+	  
+	  //vertical search -> \
+for (var row=0; row<width2DArray; row++){
+	  
+	     var isWinner = true;
+		 var winnerImages = [];
+		 
+		 for(var column = 0; column<width2DArray; column++){
+		 
+		   var idx = row + column * width2DArray;
+		   
+		   if(images[idx].src.indexOf(searchFor) == -1)
+		     isWinner = false;
+		   else
+		     winnerImages.push(images[idx]);
+		 
+		 }
+	     
+		  if(isWinner) {
+		  
+		     for(var i in winnerImages){
+			 
+			    winnerImages[i].src = winImage;
+			 }
+			 return true;
+		  }
+	  }	  
+	  
+	  //diagonal search -> \
+	  var winnerImages = [];
+	  for(var row = 0, column=0; row < width2DArray; row++, column++){
+	  
+	    var idx = row + column*width2DArray;
+		if(images[idx].src.indexOf(searchFor) == -1)
+		break;
+		else
+		    winnerImages.push(images[idx]);
+		
+	  }
+	  if(winnerImages.length == 3){
+	  
+	    for(var i in winnerImages){
+		
+		  winnerImages[i].src = winImage;
+		  
+		}
+		return true;
+	  }
+	  
+	  //diagonal search -> /
+	  var winnerImages = [];
+	  for(var row = 0, column = width2DArray-1; row < width2DArray; row++, column--){
+	  
+	    var idx = row + column*width2DArray;
+		if(images[idx].src.indexOf(searchFor) == -1)
+		break;
+		else
+		    winnerImages.push(images[idx]);
+		
+	  }
+	  if(winnerImages.length == 3){
+	  
+	    for(var i in winnerImages){
+		
+		  winnerImages[i].src = winImage;
+		  
+		}
+		return true;
+	  }
+	  
+	  return false;
+	}
+ 
+</script>
+	 
+	 
+	 
+	 
+		
+   
